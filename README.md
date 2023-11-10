@@ -41,7 +41,7 @@ Clone the project
 Go to the project directory
 
 ```bash
-  cd LoyalFriend
+  cd Pet-Adoption
 ```
 
 Install dependencies
