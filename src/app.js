@@ -8,7 +8,7 @@ const db = require("./db/conn");
 const Register = require("./models/registers")
 const hbs = require("hbs");
 const bcrypt = require("bcrypt");
-
+const authMiddleware = require("./middleware/authMiddleware");
 
 const static_path = path.join(__dirname, "../public");
 const view_path = path.join(__dirname, "../templates/views");
@@ -37,7 +37,7 @@ app.get("/index", (req, res) => {
 app.get("/about", (req, res) => {
     res.render("about");
 })
-app.get("/contact", (req, res) => {
+app.get("/contact", authMiddleware, (req, res) => {
     res.render("contact");
 })
 app.get("/breed/german", (req, res) => {
@@ -56,11 +56,12 @@ app.get("/organisation/apolo", (req, res) => {
 
 app.post("/register", async (req, res) => {
     try {
+        const hashedPassword = await bcrypt.hash(req.body.password, 10);
         const registerUser = new Register({
             username: req.body.username,
             phone: req.body.number,
             email: req.body.email,
-            password: req.body.password
+            password: hashedPassword
         })
 
         const registered = await registerUser.save();
@@ -79,9 +80,9 @@ app.post("/register", async (req, res) => {
 app.post("/login", async (req, res) => {
     try {
         const email = req.body.email;
-        const password = req.body.password;
+        const hashedPassword = await bcrypt.hash(req.body.password, 10);
         const loginemail = await Register.findOne({ email: email });
-        const loginpass = await bcrypt.compare(password, loginemail.password);
+        const loginpass = await bcrypt.compare(hashedPassword, loginemail.password);
 
         if (loginpass) {
             res.status(201).render("index");
