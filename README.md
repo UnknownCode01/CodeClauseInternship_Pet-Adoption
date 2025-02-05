@@ -1,3 +1,4 @@
+### Loyal Friend 
 
 The main purpose of this project is to automate the process of serving towards the welfare of the pets by giving the abandoned pets a place  of        shelter to live in, care them with affection through our portal. 
 
